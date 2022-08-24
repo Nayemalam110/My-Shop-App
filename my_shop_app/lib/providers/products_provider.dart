@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
-import '../models/product.dart';
+import 'product.dart';
 
-class Products with ChangeNotifier {
+class ProductsProvider with ChangeNotifier {
   List<Product> _loadProduct = [
     Product(
       id: 'p1',
@@ -40,5 +40,13 @@ class Products with ChangeNotifier {
 
   List<Product> get loadProduct {
     return [..._loadProduct];
+  }
+
+  List<Product> get favProduct {
+    return _loadProduct.where((element) => element.isFavorite == true).toList();
+  }
+
+  Product findById(String id) {
+    return loadProduct.firstWhere((element) => element.id == id);
   }
 }

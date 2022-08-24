@@ -1,20 +1,16 @@
 import 'package:flutter/material.dart';
+import '../providers/product.dart';
+import 'package:provider/provider.dart';
 import '../pages/product_details.dart';
 
 class ProductItem extends StatelessWidget {
-  final String id;
-  final String imageUrl;
-  final String title;
-
-  ProductItem(
-      {Key? key, required this.id, required this.imageUrl, required this.title})
-      : super(key: key);
-
   @override
   Widget build(BuildContext context) {
+    final product = Provider.of<Product>(context);
+
     void productDetailsPage() {
       Navigator.of(context)
-          .pushNamed(PoductDetails.routeName, arguments: title);
+          .pushNamed(PoductDetails.routeName, arguments: product.id);
     }
 
     return ClipRRect(
@@ -23,7 +19,7 @@ class ProductItem extends StatelessWidget {
         child: GestureDetector(
           onTap: productDetailsPage,
           child: Image.network(
-            imageUrl,
+            product.imageUrl,
             fit: BoxFit.cover,
           ),
         ),
@@ -31,13 +27,15 @@ class ProductItem extends StatelessWidget {
           backgroundColor: Colors.black54,
           leading: IconButton(
             icon: Icon(
-              Icons.favorite,
+              !product.isFavorite ? Icons.favorite_border : Icons.favorite,
               color: IconTheme.of(context).color,
             ),
-            onPressed: () {},
+            onPressed: () {
+              product.toggleFavorite();
+            },
           ),
           title: Text(
-            title,
+            product.title,
             textAlign: TextAlign.center,
           ),
           trailing: IconButton(

@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:my_shop_app/widgets/product_item.dart';
+
+import '../widgets/product_item.dart';
 import 'package:provider/provider.dart';
-import '../providers/products.dart';
+import '../providers/products_provider.dart';
 
 class GridOverview extends StatelessWidget {
+  bool showFav;
+  GridOverview(this.showFav);
+
   @override
   Widget build(BuildContext context) {
-    final providerData = Provider.of<Products>(context);
-    final loadProduct = providerData.loadProduct;
+    final providerData = Provider.of<ProductsProvider>(context);
+    final loadProduct =
+        showFav ? providerData.favProduct : providerData.loadProduct;
     return GridView.builder(
-      padding: EdgeInsets.all(10),
-      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+      padding: const EdgeInsets.all(10),
+      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
         maxCrossAxisExtent: 300,
         childAspectRatio: 3 / 2,
         crossAxisSpacing: 10,
@@ -18,10 +23,10 @@ class GridOverview extends StatelessWidget {
       ),
       itemCount: loadProduct.length,
       itemBuilder: (BuildContext context, int index) {
-        return ProductItem(
-            id: loadProduct[index].id,
-            imageUrl: loadProduct[index].imageUrl,
-            title: loadProduct[index].title);
+        return ChangeNotifierProvider.value(
+          value: loadProduct[index],
+          child: ProductItem(),
+        );
       },
     );
   }
