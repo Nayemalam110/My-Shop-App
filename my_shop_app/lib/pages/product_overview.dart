@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:my_shop_app/providers/product.dart';
+import 'package:my_shop_app/pages/cart_page.dart';
+import 'package:my_shop_app/providers/cart.dart';
+
 import 'package:my_shop_app/providers/products_provider.dart';
+import 'package:my_shop_app/widgets/badge.dart';
 import 'package:provider/provider.dart';
 import '../widgets/grid_overview.dart';
 
@@ -50,6 +53,16 @@ class _ProductOverviewState extends State<ProductOverview> {
             ],
             icon: Icon(Icons.more_vert),
           ),
+          Consumer<Cart>(
+            builder: ((_, value, ch) =>
+                Badge(child: ch!, value: value.itemCount.toString())),
+            child: IconButton(
+              icon: Icon(Icons.shopping_cart),
+              onPressed: () {
+                Navigator.of(context).pushNamed(CartPage.routeName);
+              },
+            ),
+          )
         ],
       ),
       body: GridOverview(showFav),

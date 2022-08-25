@@ -14,6 +14,25 @@ class PoductDetails extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(title: Text(loadSingleProduct.title)),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              height: 300,
+              width: double.infinity,
+              child: Image.network(
+                loadSingleProduct.imageUrl,
+                fit: BoxFit.cover,
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Text('Price : ${loadSingleProduct.price}'),
+            Text(loadSingleProduct.description),
+          ],
+        ),
+      ),
     );
   }
 }
