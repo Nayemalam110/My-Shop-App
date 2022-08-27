@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:my_shop_app/pages/cart_page.dart';
+import 'package:my_shop_app/pages/order_page.dart';
 import 'package:my_shop_app/providers/cart.dart';
 
 import 'package:my_shop_app/providers/products_provider.dart';
+import '../widgets/appDrawer.dart';
 import 'package:my_shop_app/widgets/badge.dart';
 import 'package:provider/provider.dart';
 import '../widgets/grid_overview.dart';
@@ -49,7 +51,7 @@ class _ProductOverviewState extends State<ProductOverview> {
               PopupMenuItem(
                 child: Text('All'),
                 value: FilterOption.All,
-              )
+              ),
             ],
             icon: Icon(Icons.more_vert),
           ),
@@ -62,9 +64,15 @@ class _ProductOverviewState extends State<ProductOverview> {
                 Navigator.of(context).pushNamed(CartPage.routeName);
               },
             ),
-          )
+          ),
+          IconButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed(OrderPage.routeName);
+              },
+              icon: Icon(Icons.safety_check_outlined))
         ],
       ),
+      drawer: AppDawer(),
       body: GridOverview(showFav),
     );
   }
