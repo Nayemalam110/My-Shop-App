@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_shop_app/pages/new_product_page.dart';
 import 'package:my_shop_app/providers/products_provider.dart';
-import 'package:my_shop_app/widgets/product_item.dart';
 import 'package:my_shop_app/widgets/user_poduct_list.dart';
 import 'package:provider/provider.dart';
 
@@ -25,6 +24,7 @@ class UserProduct extends StatelessWidget {
       ),
       body: ListView.builder(
         itemBuilder: (context, index) => UserProductList(
+          products.loadProduct[index].id,
           products.loadProduct[index].title,
           products.loadProduct[index].imageUrl,
         ),

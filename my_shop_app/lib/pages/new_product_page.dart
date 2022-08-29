@@ -14,14 +14,44 @@ class _NewProductPageState extends State<NewProductPage> {
   final _priceFoucsNode = FocusNode();
   final _imgUrlController = TextEditingController();
   final _form = GlobalKey<FormState>();
+
   var _editProduct = Product(
     id: '',
     title: '',
     description: '',
     price: 0,
-    imageUrl:
-        'https://etenjournal.files.wordpress.com/2021/10/the_earth_seen_from_apollo_17.jpeg',
+    imageUrl: '',
   );
+  var isInts = true;
+  var _intiValues = {
+    'title': '',
+    'description': '',
+    'price': '',
+    'imageUrl': '',
+  };
+
+  @override
+  void didChangeDependencies() {
+    if (isInts) {
+      var productId = ModalRoute.of(context)?.settings.arguments as String?;
+
+      if (productId != null) {
+        _editProduct = Provider.of<ProductsProvider>(context, listen: false)
+            .findById(productId);
+        _intiValues = {
+          'title': _editProduct.title,
+          'description': _editProduct.description,
+          'price': _editProduct.price.toString(),
+          'imageUrl': '',
+        };
+        _imgUrlController.text = _editProduct.imageUrl;
+      }
+    }
+    isInts = false;
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+  }
+
   @override
   void dispose() {
     _imgUrlController.dispose();
@@ -38,8 +68,13 @@ class _NewProductPageState extends State<NewProductPage> {
     }
 
     _form.currentState!.save();
+    if (_editProduct.id == '') {
+      Provider.of<ProductsProvider>(context, listen: false)
+          .addProduct(_editProduct);
+    }
     Provider.of<ProductsProvider>(context, listen: false)
-        .addProduct(_editProduct);
+        .updateProduct(_editProduct.id, _editProduct);
+
     Navigator.of(context).pop();
   }
 
@@ -56,6 +91,7 @@ class _NewProductPageState extends State<NewProductPage> {
             child: Column(
               children: [
                 TextFormField(
+                    initialValue: _intiValues['title'].toString(),
                     decoration: const InputDecoration(labelText: 'Title'),
                     keyboardType: TextInputType.text,
                     onFieldSubmitted: (_) =>
@@ -76,6 +112,7 @@ class _NewProductPageState extends State<NewProductPage> {
                       );
                     }),
                 TextFormField(
+                  initialValue: _intiValues['price'].toString(),
                   decoration: InputDecoration(labelText: 'Price'),
                   keyboardType: TextInputType.number,
                   focusNode: _priceFoucsNode,
@@ -99,6 +136,7 @@ class _NewProductPageState extends State<NewProductPage> {
                   //      FocusScope.of(context).requestFocus(_priceFoucsNode),
                 ),
                 TextFormField(
+                  initialValue: _intiValues['description'].toString(),
                   decoration: const InputDecoration(labelText: 'Description'),
                   keyboardType: TextInputType.multiline,
                   maxLines: 3,
@@ -142,7 +180,7 @@ class _NewProductPageState extends State<NewProductPage> {
                     ),
                     Expanded(
                       child: TextFormField(
-                        decoration: InputDecoration(labelText: 'imgUrl'),
+                        decoration: const InputDecoration(labelText: 'imgUrl'),
                         keyboardType: TextInputType.url,
                         controller: _imgUrlController,
                         textInputAction: TextInputAction.done,
