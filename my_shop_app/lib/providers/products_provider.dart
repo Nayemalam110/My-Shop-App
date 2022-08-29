@@ -49,4 +49,17 @@ class ProductsProvider with ChangeNotifier {
   Product findById(String id) {
     return loadProduct.firstWhere((element) => element.id == id);
   }
+
+  void addProduct(Product prod) {
+    final newProduct = Product(
+      id: DateTime.now().toString(),
+      title: prod.title,
+      description: prod.description,
+      price: prod.price,
+      imageUrl: prod.imageUrl,
+    );
+    _loadProduct.add(newProduct);
+
+    notifyListeners();
+  }
 }

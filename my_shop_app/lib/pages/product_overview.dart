@@ -28,7 +28,7 @@ class _ProductOverviewState extends State<ProductOverview> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'My Shop',
           textAlign: TextAlign.center,
         ),
@@ -65,11 +65,6 @@ class _ProductOverviewState extends State<ProductOverview> {
               },
             ),
           ),
-          IconButton(
-              onPressed: () {
-                Navigator.of(context).pushNamed(OrderPage.routeName);
-              },
-              icon: Icon(Icons.safety_check_outlined))
         ],
       ),
       drawer: AppDawer(),

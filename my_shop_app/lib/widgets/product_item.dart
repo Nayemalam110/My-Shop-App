@@ -17,13 +17,6 @@ class ProductItem extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: GridTile(
-        child: GestureDetector(
-          onTap: productDetailsPage,
-          child: Image.network(
-            product.imageUrl,
-            fit: BoxFit.cover,
-          ),
-        ),
         footer: GridTileBar(
           backgroundColor: Colors.black54,
           leading: IconButton(
@@ -42,11 +35,29 @@ class ProductItem extends StatelessWidget {
           trailing: IconButton(
             onPressed: () {
               cart.addItem(product.id, product.price, product.title);
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                duration: Duration(seconds: 2),
+                content: Text('Added to Cart'),
+                action: SnackBarAction(
+                  label: 'UNDO',
+                  onPressed: () {
+                    cart.removeSingleItem(product.id);
+                  },
+                ),
+              ));
             },
             icon: Icon(
               Icons.shopping_cart_checkout,
               color: IconTheme.of(context).color,
             ),
+          ),
+        ),
+        child: GestureDetector(
+          onTap: productDetailsPage,
+          child: Image.network(
+            product.imageUrl,
+            fit: BoxFit.cover,
           ),
         ),
       ),

@@ -21,16 +21,35 @@ class CartItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dismissible(
       key: ValueKey(id),
+      confirmDismiss: (direction) {
+        return showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('Delete Item'),
+            content: Text('Do you want to delete this Item'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: Text('No'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: Text('Yes'),
+              ),
+            ],
+          ),
+        );
+      },
       background: Container(
         color: Theme.of(context).errorColor,
         margin: EdgeInsets.all(10),
+        alignment: Alignment.centerRight,
+        padding: EdgeInsets.only(right: 20),
         child: Icon(
           Icons.delete,
           color: Colors.white,
           size: 30,
         ),
-        alignment: Alignment.centerRight,
-        padding: EdgeInsets.only(right: 20),
       ),
       direction: DismissDirection.endToStart,
       onDismissed: (direction) {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:my_shop_app/pages/order_page.dart';
+import '../pages/order_page.dart';
+import '../pages/user_product.dart';
 
 class AppDawer extends StatelessWidget {
   @override
@@ -10,7 +11,6 @@ class AppDawer extends StatelessWidget {
           title: Text('Drawer'),
           automaticallyImplyLeading: false,
         ),
-        Divider(),
         ListTile(
           leading: Icon(Icons.shop),
           title: Text('Shop'),
@@ -22,6 +22,13 @@ class AppDawer extends StatelessWidget {
           title: Text('Order'),
           onTap: (() => Navigator.of(context).pushNamed(OrderPage.routeName)),
         ),
+        Divider(),
+        ListTile(
+          leading: Icon(Icons.edit),
+          title: Text('Manage Products'),
+          onTap: (() => Navigator.of(context).pushNamed(UserProduct.routeName)),
+        ),
+        Divider(),
       ]),
     );
   }
