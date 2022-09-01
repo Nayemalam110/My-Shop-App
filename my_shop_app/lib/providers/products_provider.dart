@@ -53,19 +53,46 @@ class ProductsProvider with ChangeNotifier {
     return loadProduct.firstWhere((element) => element.id == id);
   }
 
+  Future<void> fetchAndSetData() async {
+    final url = Uri.parse(
+        'https://my-shop-49dc7-default-rtdb.asia-southeast1.firebasedatabase.app/products.json');
+    try {
+      final response = await http.get(url);
+      final extertData = json.decode(response.body) as Map<String, dynamic>;
+      final List<Product> loadedProdutData = [];
+      extertData.forEach((key, value) {
+        loadedProdutData.add(
+          Product(
+            id: key,
+            title: value['title'],
+            description: value['description'],
+            price: value['price'],
+            imageUrl: value['imageUrl'],
+            isFavorite: value['isFavorite'],
+          ),
+        );
+      });
+      _loadProduct.addAll(loadedProdutData);
+      notifyListeners();
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
   Future<void> addProduct(Product prod) async {
     var url = Uri.parse(
         'https://my-shop-49dc7-default-rtdb.asia-southeast1.firebasedatabase.app/products.json');
-    await http
-        .post(url,
-            body: json.encode({
-              'title': prod.title,
-              'description': prod.description,
-              'price': prod.price,
-              'imageUrl': prod.imageUrl,
-              'isFavorite': prod.isFavorite,
-            }))
-        .then((value) {
+
+    try {
+      final value = await http.post(url,
+          body: json.encode({
+            'title': prod.title,
+            'description': prod.description,
+            'price': prod.price,
+            'imageUrl': prod.imageUrl,
+            'isFavorite': prod.isFavorite,
+          }));
+
       final newProduct = Product(
         id: json.decode(value.body)['name'],
         title: prod.title,
@@ -76,10 +103,9 @@ class ProductsProvider with ChangeNotifier {
       _loadProduct.add(newProduct);
 
       notifyListeners();
-    }).catchError((e) {
-      print(e);
+    } catch (e) {
       throw e;
-    });
+    }
   }
 
   void removeProduct(String id) {

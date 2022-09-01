@@ -62,7 +62,7 @@ class _NewProductPageState extends State<NewProductPage> {
     super.dispose();
   }
 
-  void _saveFrom() {
+  Future<void> _saveFrom() async {
     print(_editProduct.title);
 
     final isVaild = _form.currentState!.validate();
@@ -76,10 +76,11 @@ class _NewProductPageState extends State<NewProductPage> {
     });
 
     if (_editProduct.id == '') {
-      Provider.of<ProductsProvider>(context, listen: false)
-          .addProduct(_editProduct)
-          .catchError((e) {
-        return showDialog(
+      try {
+        await Provider.of<ProductsProvider>(context, listen: false)
+            .addProduct(_editProduct);
+      } catch (e) {
+        await showDialog(
             context: context,
             builder: (context) {
               return AlertDialog(
@@ -95,12 +96,12 @@ class _NewProductPageState extends State<NewProductPage> {
                 ],
               );
             });
-      }).then((_) {
+      } finally {
         setState(() {
           isLoading = false;
         });
         Navigator.of(context).pushReplacementNamed(UserProduct.routeName);
-      });
+      }
     } else {
       Provider.of<ProductsProvider>(context, listen: false)
           .updateProduct(_editProduct.id, _editProduct);

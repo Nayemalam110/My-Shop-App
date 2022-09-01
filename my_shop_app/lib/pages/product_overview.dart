@@ -4,6 +4,7 @@ import 'package:my_shop_app/pages/order_page.dart';
 import 'package:my_shop_app/providers/cart.dart';
 
 import 'package:my_shop_app/providers/products_provider.dart';
+import 'package:my_shop_app/widgets/product_item.dart';
 import '../widgets/appDrawer.dart';
 import 'package:my_shop_app/widgets/badge.dart';
 import 'package:provider/provider.dart';
@@ -21,6 +22,12 @@ class ProductOverview extends StatefulWidget {
 
 class _ProductOverviewState extends State<ProductOverview> {
   bool showFav = false;
+  @override
+  void initState() {
+    Provider.of<ProductsProvider>(context, listen: false).fetchAndSetData();
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
