@@ -83,6 +83,7 @@ class _NewProductPageState extends State<NewProductPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add Product'),
+        actions: [IconButton(onPressed: _saveFrom, icon: Icon(Icons.save))],
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -109,6 +110,7 @@ class _NewProductPageState extends State<NewProductPage> {
                         description: _editProduct.description,
                         price: _editProduct.price,
                         imageUrl: _editProduct.imageUrl,
+                        isFavorite: _editProduct.isFavorite,
                       );
                     }),
                 TextFormField(
@@ -129,6 +131,7 @@ class _NewProductPageState extends State<NewProductPage> {
                       description: _editProduct.description,
                       price: double.parse(newValue!),
                       imageUrl: _editProduct.imageUrl,
+                      isFavorite: _editProduct.isFavorite,
                     );
                   },
 
@@ -153,6 +156,7 @@ class _NewProductPageState extends State<NewProductPage> {
                       description: newValue!,
                       price: _editProduct.price,
                       imageUrl: _editProduct.imageUrl,
+                      isFavorite: _editProduct.isFavorite,
                     );
                   },
 
@@ -191,6 +195,7 @@ class _NewProductPageState extends State<NewProductPage> {
                             description: _editProduct.description,
                             price: _editProduct.price,
                             imageUrl: newValue!,
+                            isFavorite: _editProduct.isFavorite,
                           );
                         },
                         onFieldSubmitted: (_) => _saveFrom(),
