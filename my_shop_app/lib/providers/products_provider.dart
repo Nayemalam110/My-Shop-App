@@ -53,27 +53,33 @@ class ProductsProvider with ChangeNotifier {
     return loadProduct.firstWhere((element) => element.id == id);
   }
 
-  void addProduct(Product prod) {
+  Future<void> addProduct(Product prod) async {
     var url = Uri.parse(
         'https://my-shop-49dc7-default-rtdb.asia-southeast1.firebasedatabase.app/products.json');
-    http.post(url,
-        body: json.encode({
-          'title': prod.title,
-          'description': prod.description,
-          'price': prod.price,
-          'imageUrl': prod.imageUrl,
-          'isFavorite': prod.isFavorite,
-        }));
-    final newProduct = Product(
-      id: DateTime.now().toString(),
-      title: prod.title,
-      description: prod.description,
-      price: prod.price,
-      imageUrl: prod.imageUrl,
-    );
-    _loadProduct.add(newProduct);
+    await http
+        .post(url,
+            body: json.encode({
+              'title': prod.title,
+              'description': prod.description,
+              'price': prod.price,
+              'imageUrl': prod.imageUrl,
+              'isFavorite': prod.isFavorite,
+            }))
+        .then((value) {
+      final newProduct = Product(
+        id: json.decode(value.body)['name'],
+        title: prod.title,
+        description: prod.description,
+        price: prod.price,
+        imageUrl: prod.imageUrl,
+      );
+      _loadProduct.add(newProduct);
 
-    notifyListeners();
+      notifyListeners();
+    }).catchError((e) {
+      print(e);
+      throw e;
+    });
   }
 
   void removeProduct(String id) {
