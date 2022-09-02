@@ -25,6 +25,46 @@ class Order with ChangeNotifier {
     return [..._orders];
   }
 
+  Future<void> fetchAndSetDataOrder() async {
+    final url = Uri.parse(
+        'https://my-shop-49dc7-default-rtdb.asia-southeast1.firebasedatabase.app/orders.json');
+
+    try {
+      final response = await http.get(url);
+      final extertData = json.decode(response.body) as Map<String, dynamic>;
+
+      final List<OrderItem> orderdItem = [];
+
+      print('okye 1');
+      extertData.forEach(
+        (key, value) {
+          orderdItem.add(
+            OrderItem(
+              id: key,
+              amount: value['amount'],
+              dateTime: DateTime.parse(value['dateTime']),
+              products: (value['products'] as List<dynamic>)
+                  .map(
+                    (e) => CartItem(
+                      id: e['id'],
+                      title: e['title'],
+                      quantity: e['quantity'],
+                      price: e['price'],
+                    ),
+                  )
+                  .toList(),
+            ),
+          );
+        },
+      );
+
+      _orders = orderdItem.reversed.toList();
+      notifyListeners();
+    } catch (e) {
+      print('somethis iis weong');
+    }
+  }
+
   Future<void> addOrder(List<CartItem> cartPordut, double total) async {
     var dateData = DateTime.now();
 
@@ -45,7 +85,7 @@ class Order with ChangeNotifier {
                     })
                 .toList(),
           }));
-
+      print(json.decode(response.body)['name']);
       _orders.insert(
         0,
         OrderItem(
@@ -58,5 +98,7 @@ class Order with ChangeNotifier {
     } catch (e) {
       print('some thing is wrong');
     }
+
+    notifyListeners();
   }
 }

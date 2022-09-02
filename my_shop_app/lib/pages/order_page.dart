@@ -3,9 +3,18 @@ import 'package:my_shop_app/providers/order.dart';
 import 'package:my_shop_app/widgets/order_item.dart';
 import 'package:provider/provider.dart';
 
-class OrderPage extends StatelessWidget {
+class OrderPage extends StatefulWidget {
   static const routeName = '/orders';
-  bool orderCountNull = false;
+  createState() => _OrderPageState();
+}
+
+class _OrderPageState extends State<OrderPage> {
+  @override
+  void initState() {
+    Provider.of<Order>(context, listen: false).fetchAndSetDataOrder();
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
