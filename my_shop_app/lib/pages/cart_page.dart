@@ -28,13 +28,16 @@ class CartPage extends StatelessWidget {
                   Chip(label: Text('\$${cart.totalAmount.toStringAsFixed(2)}')),
                   Spacer(),
                   TextButton(
-                      onPressed: () {
-                        Provider.of<Order>(context, listen: false).addOrder(
-                          cart.item.values.toList(),
-                          cart.totalAmount,
-                        );
-                        cart.clear();
-                      },
+                      onPressed: cart.totalAmount <= 0
+                          ? null
+                          : () {
+                              Provider.of<Order>(context, listen: false)
+                                  .addOrder(
+                                cart.item.values.toList(),
+                                cart.totalAmount,
+                              );
+                              cart.clear();
+                            },
                       child: Text('Order Now'))
                 ],
               ),

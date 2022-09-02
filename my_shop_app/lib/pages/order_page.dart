@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 class OrderPage extends StatelessWidget {
   static const routeName = '/orders';
+  bool orderCountNull = false;
 
   @override
   Widget build(BuildContext context) {

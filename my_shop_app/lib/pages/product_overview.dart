@@ -22,11 +22,27 @@ class ProductOverview extends StatefulWidget {
 
 class _ProductOverviewState extends State<ProductOverview> {
   bool showFav = false;
+  bool isLoading = false;
   @override
   void initState() {
-    Provider.of<ProductsProvider>(context, listen: false).fetchAndSetData();
+    setState(() {
+      isLoading = true;
+    });
+    Provider.of<ProductsProvider>(context, listen: false)
+        .fetchAndSetData()
+        .then((_) {
+      setState(() {
+        isLoading = false;
+      });
+    });
+
     // TODO: implement initState
     super.initState();
+  }
+
+  Future<void> refresher(context) async {
+    await Provider.of<ProductsProvider>(context, listen: false)
+        .fetchAndSetData();
   }
 
   @override
@@ -75,7 +91,13 @@ class _ProductOverviewState extends State<ProductOverview> {
         ],
       ),
       drawer: AppDawer(),
-      body: GridOverview(showFav),
+      body: RefreshIndicator(
+          onRefresh: () {
+            return refresher(context);
+          },
+          child: isLoading
+              ? Center(child: CircularProgressIndicator())
+              : GridOverview(showFav)),
     );
   }
 }
