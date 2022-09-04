@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:my_shop_app/pages/auth_screen.dart';
 import 'package:my_shop_app/pages/cart_page.dart';
 import 'package:my_shop_app/pages/new_product_page.dart';
 import 'package:my_shop_app/pages/order_page.dart';
 import 'package:my_shop_app/pages/user_product.dart';
+import 'package:my_shop_app/providers/auth.dart';
 import 'package:my_shop_app/providers/cart.dart';
 import 'package:my_shop_app/providers/order.dart';
 import 'package:provider/provider.dart';
@@ -18,35 +20,40 @@ class MyShopApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (context) => ProductsProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (context) => Cart(),
-        ),
-        ChangeNotifierProvider(
-          create: (context) => Order(),
-        )
-      ],
-      child: MaterialApp(
-        title: 'Shop App',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-            colorScheme: ColorScheme.fromSwatch(
-                primarySwatch: Colors.purple, accentColor: Colors.deepOrange),
-            fontFamily: 'Lato',
-            iconTheme: IconThemeData(color: Colors.orange.shade900),
-            backgroundColor: Colors.amber),
-        home: ProductOverview(),
-        routes: {
-          PoductDetails.routeName: (context) => PoductDetails(),
-          CartPage.routeName: (context) => CartPage(),
-          OrderPage.routeName: (context) => OrderPage(),
-          UserProduct.routeName: (context) => UserProduct(),
-          NewProductPage.routeName: (context) => NewProductPage(),
-        },
-      ),
-    );
+        providers: [
+          ChangeNotifierProvider(
+            create: (context) => Auth(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => ProductsProvider(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => Cart(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => Order(),
+          )
+        ],
+        child: Consumer<Auth>(
+          builder: (context, auth, _) => MaterialApp(
+            title: 'Shop App',
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(
+                colorScheme: ColorScheme.fromSwatch(
+                    primarySwatch: Colors.purple,
+                    accentColor: Colors.deepOrange),
+                fontFamily: 'Lato',
+                iconTheme: IconThemeData(color: Colors.orange.shade900),
+                backgroundColor: Colors.amber),
+            home: auth.IsAuth ? ProductOverview() : AuthScreen(),
+            routes: {
+              PoductDetails.routeName: (context) => PoductDetails(),
+              CartPage.routeName: (context) => CartPage(),
+              OrderPage.routeName: (context) => OrderPage(),
+              UserProduct.routeName: (context) => UserProduct(),
+              NewProductPage.routeName: (context) => NewProductPage(),
+            },
+          ),
+        ));
   }
 }
