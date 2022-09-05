@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_shop_app/providers/auth.dart';
 import 'package:my_shop_app/providers/cart.dart';
 import '../providers/product.dart';
 import 'package:provider/provider.dart';
@@ -9,6 +10,7 @@ class ProductItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final product = Provider.of<Product>(context);
     final cart = Provider.of<Cart>(context);
+    final authData = Provider.of<Auth>(context);
     void productDetailsPage() {
       Navigator.of(context)
           .pushNamed(PoductDetails.routeName, arguments: product.id);
@@ -25,7 +27,7 @@ class ProductItem extends StatelessWidget {
               color: IconTheme.of(context).color,
             ),
             onPressed: () {
-              product.toggleFavorite();
+              product.toggleFavorite(authData.token!);
             },
           ),
           title: Text(

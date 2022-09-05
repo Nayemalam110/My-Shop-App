@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_shop_app/pages/auth_screen.dart';
+
 import 'package:my_shop_app/pages/cart_page.dart';
 import 'package:my_shop_app/pages/new_product_page.dart';
 import 'package:my_shop_app/pages/order_page.dart';
@@ -24,14 +25,20 @@ class MyShopApp extends StatelessWidget {
           ChangeNotifierProvider(
             create: (context) => Auth(),
           ),
-          ChangeNotifierProvider(
-            create: (context) => ProductsProvider(),
+          ChangeNotifierProxyProvider<Auth, ProductsProvider>(
+            create: (context) => ProductsProvider('', []),
+            update: (context, value, previous) => ProductsProvider(
+                value.token, previous == null ? [] : previous.loadProduct),
           ),
           ChangeNotifierProvider(
             create: (context) => Cart(),
           ),
-          ChangeNotifierProvider(
-            create: (context) => Order(),
+          ChangeNotifierProxyProvider<Auth, Order>(
+            create: (context) => Order('', []),
+            update: (context, value, previous) {
+              return Order(
+                  value.token, previous == null ? [] : previous.orders);
+            },
           )
         ],
         child: Consumer<Auth>(

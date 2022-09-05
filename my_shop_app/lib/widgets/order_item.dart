@@ -15,12 +15,13 @@ class _OrderItemsState extends State<OrderItems> {
   bool _expended = false;
   @override
   Widget build(BuildContext context) {
+    var orderAmount = widget.order.amount;
     return Card(
       margin: EdgeInsets.all(10),
       child: Column(
         children: [
           ListTile(
-            title: Text("\$${widget.order.amount}"),
+            title: Text("\$$orderAmount"),
             subtitle: Text(
                 DateFormat('dd/mm/yyyy E hh:mm').format(widget.order.dateTime)),
             trailing: IconButton(

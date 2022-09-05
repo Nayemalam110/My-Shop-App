@@ -42,6 +42,9 @@ class ProductsProvider with ChangeNotifier {
     // ),
   ];
 
+  String? authToken;
+  ProductsProvider(this.authToken, this._loadProduct);
+
   List<Product> get loadProduct {
     return [..._loadProduct];
   }
@@ -56,11 +59,13 @@ class ProductsProvider with ChangeNotifier {
 
   Future<void> fetchAndSetData() async {
     final url = Uri.parse(
-        'https://my-shop-49dc7-default-rtdb.asia-southeast1.firebasedatabase.app/products.json');
+        'https://my-shop-49dc7-default-rtdb.asia-southeast1.firebasedatabase.app/products.json?auth=$authToken');
     try {
       final response = await http.get(url);
-      final extertData = json.decode(response.body) as Map<String, dynamic>;
       final List<Product> loadedProdutData = [];
+
+      final extertData = json.decode(response.body) as Map<String, dynamic>;
+
       extertData.forEach((key, value) {
         loadedProdutData.add(
           Product(
@@ -73,16 +78,18 @@ class ProductsProvider with ChangeNotifier {
           ),
         );
       });
+
       _loadProduct = loadedProdutData;
       notifyListeners();
     } catch (e) {
       print(e.toString());
+      print('anything 2');
     }
   }
 
   Future<void> addProduct(Product prod) async {
-    var url = Uri.parse(
-        'https://my-shop-49dc7-default-rtdb.asia-southeast1.firebasedatabase.app/products.json');
+    final url = Uri.parse(
+        'https://my-shop-49dc7-default-rtdb.asia-southeast1.firebasedatabase.app/products.json?auth=$authToken');
 
     try {
       final value = await http.post(url,
@@ -111,7 +118,7 @@ class ProductsProvider with ChangeNotifier {
 
   Future<void> removeProduct(String id) async {
     var url = Uri.parse(
-        'https://my-shop-49dc7-default-rtdb.asia-southeast1.firebasedatabase.app/products/$id.json');
+        'https://my-shop-49dc7-default-rtdb.asia-southeast1.firebasedatabase.app/products/$id.json?auth=$authToken');
     var existingIndex = _loadProduct.indexWhere((element) => element.id == id);
     // _loadProduct.removeWhere((element) => element.id == id);
     Product? existingProduct = _loadProduct[existingIndex];
@@ -132,7 +139,7 @@ class ProductsProvider with ChangeNotifier {
     final podIndex = _loadProduct.indexWhere((element) => element.id == id);
     if (podIndex >= 0) {
       var url = Uri.parse(
-          'https://my-shop-49dc7-default-rtdb.asia-southeast1.firebasedatabase.app/products/$id.json');
+          'https://my-shop-49dc7-default-rtdb.asia-southeast1.firebasedatabase.app/products/$id.json?auth=$authToken');
       try {
         final value = await http.patch(url,
             body: json.encode({

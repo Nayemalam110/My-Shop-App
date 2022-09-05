@@ -5,7 +5,7 @@ class HttpException implements Exception {
   @override
   String toString() {
     if (message == 'EMAIL_EXISTS') {
-      print('object adsffds');
+      print('Http Exception occured');
     }
 
     return message;

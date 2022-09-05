@@ -21,13 +21,16 @@ class OrderItem {
 class Order with ChangeNotifier {
   List<OrderItem> _orders = [];
 
+  String? authToken;
+  Order(this.authToken, this._orders);
+
   List<OrderItem> get orders {
     return [..._orders];
   }
 
   Future<void> fetchAndSetDataOrder() async {
     final url = Uri.parse(
-        'https://my-shop-49dc7-default-rtdb.asia-southeast1.firebasedatabase.app/orders.json');
+        'https://my-shop-49dc7-default-rtdb.asia-southeast1.firebasedatabase.app/orders.json?auth=$authToken');
 
     try {
       final response = await http.get(url);
@@ -41,7 +44,7 @@ class Order with ChangeNotifier {
           orderdItem.add(
             OrderItem(
               id: key,
-              amount: value['amount'],
+              amount: (value['amount']).toDouble(),
               dateTime: DateTime.parse(value['dateTime']),
               products: (value['products'] as List<dynamic>)
                   .map(
@@ -57,10 +60,12 @@ class Order with ChangeNotifier {
           );
         },
       );
+      print('okey 3');
 
       _orders = orderdItem.reversed.toList();
       notifyListeners();
     } catch (e) {
+      print(e);
       print('somethis iis weong');
     }
   }
@@ -69,7 +74,7 @@ class Order with ChangeNotifier {
     var dateData = DateTime.now();
 
     var url = Uri.parse(
-        'https://my-shop-49dc7-default-rtdb.asia-southeast1.firebasedatabase.app/orders.json');
+        'https://my-shop-49dc7-default-rtdb.asia-southeast1.firebasedatabase.app/orders.json?auth=$authToken');
 
     try {
       var response = await http.post(url,
