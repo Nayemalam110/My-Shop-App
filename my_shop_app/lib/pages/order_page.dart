@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_shop_app/providers/order.dart';
+import 'package:my_shop_app/widgets/appDrawer.dart';
 import 'package:my_shop_app/widgets/order_item.dart';
 import 'package:provider/provider.dart';
 
@@ -24,6 +25,7 @@ class _OrderPageState extends State<OrderPage> {
       appBar: AppBar(
         title: Text('Your Orders'),
       ),
+      drawer: AppDawer(),
       body: ListView.builder(
         itemBuilder: ((context, index) => OrderItems(orderData.orders[index])),
         itemCount: orderData.orders.length,

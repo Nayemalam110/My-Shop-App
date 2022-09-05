@@ -26,18 +26,18 @@ class MyShopApp extends StatelessWidget {
             create: (context) => Auth(),
           ),
           ChangeNotifierProxyProvider<Auth, ProductsProvider>(
-            create: (context) => ProductsProvider('', []),
-            update: (context, value, previous) => ProductsProvider(
-                value.token, previous == null ? [] : previous.loadProduct),
+            create: (context) => ProductsProvider('', '', []),
+            update: (context, value, previous) => ProductsProvider(value.token,
+                value.usreId, previous == null ? [] : previous.loadProduct),
           ),
           ChangeNotifierProvider(
             create: (context) => Cart(),
           ),
           ChangeNotifierProxyProvider<Auth, Order>(
-            create: (context) => Order('', []),
+            create: (context) => Order('', '', []),
             update: (context, value, previous) {
-              return Order(
-                  value.token, previous == null ? [] : previous.orders);
+              return Order(value.token, value.usreId!,
+                  previous == null ? [] : previous.orders);
             },
           )
         ],

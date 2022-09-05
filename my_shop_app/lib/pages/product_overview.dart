@@ -29,7 +29,7 @@ class _ProductOverviewState extends State<ProductOverview> {
       isLoading = true;
     });
     Provider.of<ProductsProvider>(context, listen: false)
-        .fetchAndSetData()
+        .fetchAndSetData(false)
         .then((_) {
       setState(() {
         isLoading = false;
@@ -47,7 +47,7 @@ class _ProductOverviewState extends State<ProductOverview> {
 
   @override
   Widget build(BuildContext context) {
-    var filterdProducts = Provider.of<ProductsProvider>(context);
+    Provider.of<ProductsProvider>(context);
 
     return Scaffold(
         appBar: AppBar(
@@ -93,6 +93,8 @@ class _ProductOverviewState extends State<ProductOverview> {
         drawer: AppDawer(),
         body: isLoading
             ? Center(child: CircularProgressIndicator())
-            : GridOverview(showFav));
+            : RefreshIndicator(
+                onRefresh: () => refresher(context),
+                child: GridOverview(showFav)));
   }
 }

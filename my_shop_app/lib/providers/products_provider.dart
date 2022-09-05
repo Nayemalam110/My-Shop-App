@@ -43,7 +43,8 @@ class ProductsProvider with ChangeNotifier {
   ];
 
   String? authToken;
-  ProductsProvider(this.authToken, this._loadProduct);
+  String? userId;
+  ProductsProvider(this.authToken, this.userId, this._loadProduct);
 
   List<Product> get loadProduct {
     return [..._loadProduct];
@@ -57,15 +58,23 @@ class ProductsProvider with ChangeNotifier {
     return loadProduct.firstWhere((element) => element.id == id);
   }
 
-  Future<void> fetchAndSetData() async {
-    final url = Uri.parse(
-        'https://my-shop-49dc7-default-rtdb.asia-southeast1.firebasedatabase.app/products.json?auth=$authToken');
+  Future<void> fetchAndSetData([bool filterByUser = false]) async {
+    final filterString =
+        filterByUser ? 'orderBy="creatorId"&equalTo="$userId"' : '';
+    var url = Uri.parse(
+        'https://my-shop-49dc7-default-rtdb.asia-southeast1.firebasedatabase.app/products.json?auth=$authToken&$filterString');
     try {
       final response = await http.get(url);
       final List<Product> loadedProdutData = [];
 
       final extertData = json.decode(response.body) as Map<String, dynamic>;
-
+      if (extertData == null) {
+        return;
+      }
+      url = Uri.parse(
+          'https://my-shop-49dc7-default-rtdb.asia-southeast1.firebasedatabase.app/userFavorite/$userId.json?auth=$authToken');
+      var favResponse = await http.get(url);
+      var favData = json.decode(favResponse.body);
       extertData.forEach((key, value) {
         loadedProdutData.add(
           Product(
@@ -74,7 +83,7 @@ class ProductsProvider with ChangeNotifier {
             description: value['description'],
             price: value['price'],
             imageUrl: value['imageUrl'],
-            isFavorite: value['isFavorite'],
+            isFavorite: favData == null ? false : favData[key] ?? false,
           ),
         );
       });
@@ -98,7 +107,7 @@ class ProductsProvider with ChangeNotifier {
             'description': prod.description,
             'price': prod.price,
             'imageUrl': prod.imageUrl,
-            'isFavorite': prod.isFavorite,
+            'creatorId': userId,
           }));
 
       final newProduct = Product(

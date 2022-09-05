@@ -5,9 +5,9 @@ import 'package:http/http.dart' as http;
 import 'package:my_shop_app/models/http_exception.dart';
 
 class Auth with ChangeNotifier {
-  late String _token;
+  late String? _token;
   DateTime? _expiryDate;
-  late String _userId;
+  late String? _userId;
 
   bool get IsAuth {
     return token != null;
@@ -22,7 +22,7 @@ class Auth with ChangeNotifier {
     return null;
   }
 
-  String get usreId {
+  String? get usreId {
     return _userId;
   }
 
@@ -65,5 +65,12 @@ class Auth with ChangeNotifier {
 
   Future<void> logIn(String email, String password) async {
     return _authenticate(email, password, 'signInWithPassword');
+  }
+
+  void logout() {
+    _token = null;
+    _expiryDate = null;
+    _userId = null;
+    notifyListeners();
   }
 }
