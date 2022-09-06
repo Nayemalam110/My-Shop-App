@@ -61,7 +61,7 @@ class Auth with ChangeNotifier {
 
       var userData = json.encode({
         'token': _token,
-        'usreId': _userId,
+        'userId': _userId,
         'expiryDate': _expiryDate!.toIso8601String(),
       });
       prefs.setString('userData', userData);
@@ -75,6 +75,7 @@ class Auth with ChangeNotifier {
   }
 
   Future<void> logIn(String email, String password) async {
+    print(_userId);
     return _authenticate(email, password, 'signInWithPassword');
   }
 
@@ -83,16 +84,23 @@ class Auth with ChangeNotifier {
     if (!prefs.containsKey('userData')) {
       return false;
     }
-    final extractData = json.decode(prefs.getString('userData')!);
-    final extractedDate = DateTime.parse(extractData['expiryDate']);
+    final extractData =
+        json.decode(prefs.getString('userData')!) as Map<String, dynamic>;
+    final extractedDateObject = extractData['expiryDate'];
+    final extractedDate = DateTime.parse(extractedDateObject);
 
     if (extractedDate.isBefore(DateTime.now())) {
+      print('1');
       return false;
     }
-
+    print('2');
     _token = extractData['token'];
     _userId = extractData['userId'];
     _expiryDate = extractedDate;
+    print(extractData);
+    print(_userId);
+    print(_expiryDate);
+
     notifyListeners();
     _autoLogout();
 
