@@ -4,6 +4,7 @@ import 'package:my_shop_app/pages/auth_screen.dart';
 import 'package:my_shop_app/pages/cart_page.dart';
 import 'package:my_shop_app/pages/new_product_page.dart';
 import 'package:my_shop_app/pages/order_page.dart';
+import 'package:my_shop_app/pages/splash_screen.dart';
 import 'package:my_shop_app/pages/user_product.dart';
 import 'package:my_shop_app/providers/auth.dart';
 import 'package:my_shop_app/providers/cart.dart';
@@ -52,7 +53,15 @@ class MyShopApp extends StatelessWidget {
                 fontFamily: 'Lato',
                 iconTheme: IconThemeData(color: Colors.orange.shade900),
                 backgroundColor: Colors.amber),
-            home: auth.IsAuth ? ProductOverview() : AuthScreen(),
+            home: auth.IsAuth
+                ? ProductOverview()
+                : FutureBuilder(
+                    future: auth.tryAutoLogIn(),
+                    builder: ((context, snapshot) {
+                      return snapshot.connectionState == ConnectionState.waiting
+                          ? SplashScreen()
+                          : AuthScreen();
+                    })),
             routes: {
               PoductDetails.routeName: (context) => PoductDetails(),
               CartPage.routeName: (context) => CartPage(),

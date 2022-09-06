@@ -1,13 +1,15 @@
+import 'dart:async';
 import 'dart:convert';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:my_shop_app/models/http_exception.dart';
 
 class Auth with ChangeNotifier {
-  late String? _token;
+  String? _token;
   DateTime? _expiryDate;
-  late String? _userId;
+  String? _userId;
+  Timer? _authTimer;
 
   bool get IsAuth {
     return token != null;
@@ -52,9 +54,18 @@ class Auth with ChangeNotifier {
           ),
         ),
       );
+      _autoLogout();
       notifyListeners();
+
+      final prefs = await SharedPreferences.getInstance();
+
+      var userData = json.encode({
+        'token': _token,
+        'usreId': _userId,
+        'expiryDate': _expiryDate!.toIso8601String(),
+      });
+      prefs.setString('userData', userData);
     } catch (e) {
-      print('123');
       throw e;
     }
   }
@@ -67,10 +78,44 @@ class Auth with ChangeNotifier {
     return _authenticate(email, password, 'signInWithPassword');
   }
 
-  void logout() {
+  Future<bool> tryAutoLogIn() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (!prefs.containsKey('userData')) {
+      return false;
+    }
+    final extractData = json.decode(prefs.getString('userData')!);
+    final extractedDate = DateTime.parse(extractData['expiryDate']);
+
+    if (extractedDate.isBefore(DateTime.now())) {
+      return false;
+    }
+
+    _token = extractData['token'];
+    _userId = extractData['userId'];
+    _expiryDate = extractedDate;
+    notifyListeners();
+    _autoLogout();
+
+    return true;
+  }
+
+  Future<void> logout() async {
     _token = null;
     _expiryDate = null;
     _userId = null;
+    if (_authTimer != null) {
+      _authTimer!.cancel();
+    }
     notifyListeners();
+    final prefs = await SharedPreferences.getInstance();
+    prefs.clear();
+  }
+
+  void _autoLogout() {
+    if (_authTimer != null) {
+      _authTimer!.cancel();
+    }
+    final timeToExpiry = _expiryDate!.difference(DateTime.now()).inSeconds;
+    _authTimer = Timer(Duration(seconds: timeToExpiry), logout);
   }
 }

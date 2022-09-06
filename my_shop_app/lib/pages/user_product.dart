@@ -33,9 +33,6 @@ class UserProduct extends StatelessWidget {
       drawer: AppDawer(),
       body: FutureBuilder(
         future: refresher(context),
-        initialData: Center(
-          child: CircularProgressIndicator(),
-        ),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           return ConnectionState == ConnectionState.waiting
               ? Center(
