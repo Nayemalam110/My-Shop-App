@@ -22,7 +22,7 @@ class Order with ChangeNotifier {
   List<OrderItem> _orders = [];
 
   String? authToken;
-  String userId;
+  String? userId;
   Order(this.authToken, this.userId, this._orders);
 
   List<OrderItem> get orders {

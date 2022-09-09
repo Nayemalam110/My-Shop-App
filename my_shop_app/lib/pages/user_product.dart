@@ -19,10 +19,13 @@ class _UserProductState extends State<UserProduct> {
         .fetchAndSetData(false);
   }
 
-  var isLoading = true;
+  bool isLoading = false;
 
   @override
   void initState() {
+    setState(() {
+      isLoading = true;
+    });
     Provider.of<ProductsProvider>(context, listen: false)
         .fetchAndSetData(true)
         .then((value) {
